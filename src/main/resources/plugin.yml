@@ -1,0 +1,6 @@
+name: BiomeLocations
+api-version: ${apiVersion}
+main: net.okocraft.biomelocations.BiomeLocationsPlugin
+version: ${projectVersion}
+author: Siroshun09
+folia-supported: true
