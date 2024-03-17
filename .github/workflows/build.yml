@@ -1,0 +1,9 @@
+name: Java CI
+on: [ push, pull_request ]
+
+jobs:
+  build-java-17:
+    uses: Siroshun09/gh-actions-workflows/.github/workflows/gradle.yml@v1
+    with:
+      java-version: '17'
+      package-name: BiomeFinder-Build-${{ github.run_number }}
