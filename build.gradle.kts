@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:$mcVersion-R0.1-SNAPSHOT")
-    implementation("com.github.siroshun09.configapi:configapi-format-yaml:5.0.0-beta.3") {
+    implementation("com.github.siroshun09.configapi:configapi-format-yaml:5.0.0-SNAPSHOT") {
         exclude("org.yaml", "snakeyaml")
     }
     implementation("com.github.siroshun09.messages:messages-minimessage:0.5.0")
