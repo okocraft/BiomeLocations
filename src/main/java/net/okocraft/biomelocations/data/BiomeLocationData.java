@@ -2,6 +2,7 @@ package net.okocraft.biomelocations.data;
 
 import com.github.siroshun09.biomefinder.util.MapWalker;
 import com.github.siroshun09.biomefinder.wrapper.BlockPos;
+import com.github.siroshun09.configapi.core.file.java.binary.BinaryFormat;
 import com.github.siroshun09.configapi.core.node.IntArray;
 import com.github.siroshun09.configapi.core.node.ListNode;
 import com.github.siroshun09.configapi.core.node.MapNode;
@@ -13,7 +14,6 @@ import com.github.siroshun09.configapi.core.serialization.Serialization;
 import com.github.siroshun09.configapi.core.serialization.annotation.MapType;
 import com.github.siroshun09.configapi.core.serialization.key.KeyGenerator;
 import com.github.siroshun09.configapi.core.serialization.record.RecordSerialization;
-import com.github.siroshun09.configapi.format.yaml.YamlFormat;
 import net.kyori.adventure.key.Key;
 import net.okocraft.biomelocations.BiomeLocationsPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -46,11 +46,11 @@ public class BiomeLocationData {
         }
 
         this.biomeLocationMap = null;
-        var cacheFilepath = cacheDirectory.resolve(this.worldInfo.uid() + ".yml");
+        var cacheFilepath = cacheDirectory.resolve(this.worldInfo.uid() + ".dat");
 
         if (Files.isRegularFile(cacheFilepath)) {
             BiomeLocationsPlugin.debug().info("Using cached biome data for {}", this.worldInfo.name());
-            this.biomeLocationMap = Cache.fromMapNode(YamlFormat.DEFAULT.load(cacheFilepath)).convertArrayToList();
+            this.biomeLocationMap = Cache.fromMapNode(BinaryFormat.DEFAULT.load(cacheFilepath)).convertArrayToList();
         } else {
             BiomeLocationsPlugin.logger().info("Generating biome data of {}...", this.worldInfo.name());
             var collector = new BiomeLocationCollector(biomeFilter, minimumBiomeDistance);
@@ -61,7 +61,7 @@ public class BiomeLocationData {
             this.biomeLocationMap = collector.getResult();
 
             BiomeLocationsPlugin.debug().info("Saving biome data of {}...", this.worldInfo.name());
-            YamlFormat.DEFAULT.save(Cache.createCache(collector.getResult()).toMapNode(), cacheFilepath);
+            BinaryFormat.DEFAULT.save(Cache.createCache(collector.getResult()).toMapNode(), cacheFilepath);
         }
     }
 
@@ -101,8 +101,8 @@ public class BiomeLocationData {
                                 node -> node instanceof StringRepresentable str ? Key.key(str.asString()) : null
                         )).build();
 
-        public static Cache fromMapNode(@NotNull MapNode mapNode) {
-            return SERIALIZATION.deserializer().deserialize(mapNode);
+        public static Cache fromMapNode(@NotNull Node<?> node) {
+            return node instanceof MapNode mapNode ? SERIALIZATION.deserializer().deserialize(mapNode) : new Cache(Collections.emptyMap());
         }
 
         public static Cache createCache(@NotNull Map<Key, List<BlockPos>> original) {
