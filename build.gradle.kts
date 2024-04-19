@@ -28,7 +28,7 @@ dependencies {
     implementation("com.github.siroshun09.configapi:configapi-format-yaml:5.0.0-beta.3") {
         exclude("org.yaml", "snakeyaml")
     }
-    implementation("com.github.siroshun09.messages:messages-minimessage:0.5.0")
+    implementation("com.github.siroshun09.messages:messages-minimessage:0.6.0")
     // You can get the jar from https://github.com/Siroshun09/BiomeFinder/releases
     implementation(files(file("libs").resolve("BiomeFinder-1.9-mc$mcVersion.jar")))
 }

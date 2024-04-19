@@ -1,7 +1,7 @@
 package net.okocraft.biomelocations;
 
 import com.github.siroshun09.messages.api.directory.DirectorySource;
-import com.github.siroshun09.messages.api.directory.LoadedMessageSource;
+import com.github.siroshun09.messages.api.directory.MessageProcessors;
 import com.github.siroshun09.messages.api.source.StringMessageMap;
 import com.github.siroshun09.messages.api.util.PropertiesFile;
 import com.github.siroshun09.messages.minimessage.localization.MiniMessageLocalization;
@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
@@ -69,7 +68,6 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
             this.loadMessages();
         } catch (IOException e) {
             logger().error("Failed to load messages.", e);
-            return;
         }
     }
 
@@ -144,33 +142,13 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
             this.localization.clearSources();
         }
 
-        DirectorySource.<StringMessageMap>create(this.getDataFolder().toPath().resolve("languages"))
+        DirectorySource.forStringMessageMap(this.getDataFolder().toPath().resolve("languages"))
                 .fileExtension(PropertiesFile.FILE_EXTENSION)
                 .defaultLocale(Locale.ENGLISH, Locale.JAPANESE)
                 .messageLoader(PropertiesFile.DEFAULT_LOADER)
-                .load(this::processLoadedMessages);
-    }
-
-    private @Nullable Void processLoadedMessages(@NotNull LoadedMessageSource<StringMessageMap> loadedSource) throws IOException {
-        var locale = loadedSource.locale();
-        var messageSource = loadedSource.messageSource();
-
-        var defaultMessageMap = this.loadDefaultMessageMap(locale);
-
-        if (defaultMessageMap != null) {
-            this.mergeAndAppendMissingMessages(loadedSource.filepath(), messageSource, defaultMessageMap);
-        }
-
-        this.localization.addSource(locale, MiniMessageSource.create(messageSource));
-        return null;
-    }
-
-    private void mergeAndAppendMissingMessages(@NotNull Path filepath, @NotNull StringMessageMap target, @NotNull Map<String, String> defaultMessages) throws IOException {
-        var missingMessages = target.mergeAndCollectMissingMessages(defaultMessages);
-
-        if (!missingMessages.isEmpty()) {
-            PropertiesFile.append(filepath, missingMessages);
-        }
+                .messageProcessor(MessageProcessors.appendMissingStringMessages(this::loadDefaultMessageMap, PropertiesFile.DEFAULT_APPENDER))
+                .messageProcessor(loaded -> MiniMessageSource.create(loaded.messageSource()))
+                .load(loaded -> this.localization.addSource(loaded.locale(), loaded.messageSource()));
     }
 
     private @Nullable Map<String, String> loadDefaultMessageMap(@NotNull Locale locale) throws IOException {
