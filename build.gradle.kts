@@ -52,10 +52,6 @@ tasks {
     shadowJar {
         minimize()
         relocate("com.github.siroshun09.configapi", "net.okocraft.biomelocations.libs.configapi")
-        relocate("com.github.siroshun09.biomefinder", "net.okocraft.biomelocations.libs.biomefinder") {
-            include("com.github.siroshun09.biomefinder.util.MapWalker")
-            include("com.github.siroshun09.biomefinder.wrapper.**")
-        }
         archiveFileName = "BiomeLocations-$version.jar"
     }
 }
