@@ -1,8 +1,6 @@
 package net.okocraft.biomelocations.data;
 
-import com.github.siroshun09.biomefinder.wrapper.BlockPos;
-import com.github.siroshun09.biomefinder.wrapper.biome.BiomeSource;
-import com.github.siroshun09.biomefinder.wrapper.biome.MultiNoiseBiomeSourceWrapper;
+import net.okocraft.biomelocations.util.BlockPos;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
@@ -28,19 +26,6 @@ public record WorldInfo(@NotNull String name, @NotNull UUID uid, long seed, @Not
 
     private static BlockPos toCenter(@NotNull Location location) {
         return new BlockPos(location.getBlockX(), 64, location.getBlockZ());
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean canCreateBiomeSource() {
-        return this.environment == World.Environment.NORMAL || this.environment == World.Environment.NETHER;
-    }
-
-    public @NotNull BiomeSource createBiomeSource() {
-        return switch (this.environment) {
-            case NORMAL -> MultiNoiseBiomeSourceWrapper.overworld(this.seed);
-            case NETHER -> MultiNoiseBiomeSourceWrapper.nether(this.seed);
-            default -> throw new IllegalArgumentException("Cannot create a BiomeSource for " + this.environment.name());
-        };
     }
 
     private static int toRadius(@NotNull WorldBorder border) {

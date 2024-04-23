@@ -1,8 +1,8 @@
 package net.okocraft.biomelocations.data;
 
-import com.github.siroshun09.biomefinder.wrapper.BlockPos;
 import net.kyori.adventure.key.Key;
 import net.okocraft.biomelocations.BiomeLocationsPlugin;
+import net.okocraft.biomelocations.util.BlockPos;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

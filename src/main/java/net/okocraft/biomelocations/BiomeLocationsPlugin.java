@@ -105,15 +105,11 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
         var cacheDirectory = this.getDataFolder().toPath().resolve("cache");
 
         while ((info = queue.poll()) != null) {
-            if (!info.canCreateBiomeSource()) {
-                continue;
-            }
-
             var data = new BiomeLocationData(info);
             this.worldDataMap.put(info.uid(), data);
 
             try {
-                data.loadCacheOrCollectBiomes(cacheDirectory, this.config.searchDistance(), this.config.createBiomeFilter(), this.config.minimumBiomeDistance());
+                data.loadCacheOrCollectBiomes(cacheDirectory, this.config.searchDistance(), this.config.createBiomeFilter(), this.config.minimumBiomeDistance(), this.config.debug());
             } catch (IOException e) {
                 this.getSLF4JLogger().error("Failed to load/save the cache file (world: {})", info.name(), e);
             } catch (RuntimeException e) {

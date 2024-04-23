@@ -1,7 +1,5 @@
 package net.okocraft.biomelocations.data;
 
-import com.github.siroshun09.biomefinder.util.MapWalker;
-import com.github.siroshun09.biomefinder.wrapper.BlockPos;
 import com.github.siroshun09.configapi.core.file.java.binary.BinaryFormat;
 import com.github.siroshun09.configapi.core.node.IntArray;
 import com.github.siroshun09.configapi.core.node.ListNode;
@@ -14,8 +12,12 @@ import com.github.siroshun09.configapi.core.serialization.Serialization;
 import com.github.siroshun09.configapi.core.serialization.annotation.MapType;
 import com.github.siroshun09.configapi.core.serialization.key.KeyGenerator;
 import com.github.siroshun09.configapi.core.serialization.record.RecordSerialization;
+import com.github.siroshun09.configapi.format.yaml.YamlFormat;
 import net.kyori.adventure.key.Key;
 import net.okocraft.biomelocations.BiomeLocationsPlugin;
+import net.okocraft.biomelocations.util.BlockPos;
+import org.bukkit.Bukkit;
+import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -39,12 +41,8 @@ public class BiomeLocationData {
     }
 
     public void loadCacheOrCollectBiomes(@NotNull Path cacheDirectory, int searchDistance,
-                                         @NotNull Predicate<Key> biomeFilter, int minimumBiomeDistance) throws IOException {
-        if (!this.worldInfo.canCreateBiomeSource()) {
-            this.biomeLocationMap = Collections.emptyMap();
-            return;
-        }
-
+                                         @NotNull Predicate<Key> biomeFilter, int minimumBiomeDistance,
+                                         boolean dumpToYaml) throws IOException {
         this.biomeLocationMap = null;
         var cacheFilepath = cacheDirectory.resolve(this.worldInfo.uid() + ".dat");
 
@@ -54,14 +52,42 @@ public class BiomeLocationData {
         } else {
             BiomeLocationsPlugin.logger().info("Generating biome data of {}...", this.worldInfo.name());
             var collector = new BiomeLocationCollector(biomeFilter, minimumBiomeDistance);
-            var walker = new MapWalker(this.worldInfo.createBiomeSource(), collector);
 
-            walker.walk(this.worldInfo.center(), this.worldInfo.radius(), searchDistance);
+            var world = Bukkit.getWorld(this.worldInfo.uid());
+
+            if (world == null) {
+                BiomeLocationsPlugin.logger().warn("Could not find the world '{}'", this.worldInfo.name());
+                return;
+            }
+
+            this.collectBiomes(searchDistance, collector, world.vanillaBiomeProvider());
 
             this.biomeLocationMap = collector.getResult();
 
             BiomeLocationsPlugin.debug().info("Saving biome data of {}...", this.worldInfo.name());
-            BinaryFormat.DEFAULT.save(Cache.createCache(collector.getResult()).toMapNode(), cacheFilepath);
+            var node = Cache.createCache(collector.getResult()).toMapNode();
+            BinaryFormat.DEFAULT.save(node, cacheFilepath);
+
+            if (dumpToYaml) {
+                YamlFormat.DEFAULT.save(node, cacheDirectory.resolve(this.worldInfo.uid() + ".debug.yml"));
+            }
+        }
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    private void collectBiomes(int searchDistance, BiomeLocationCollector collector, @NotNull BiomeProvider provider) {
+        var center = this.worldInfo.center();
+        int radius = this.worldInfo.radius();
+        int minX = center.x() - radius;
+        int minZ = center.z() - radius;
+        int maxX = center.x() + radius;
+        int maxZ = center.z() + radius;
+        int y = center.y();
+
+        for (int x = minX; x < maxX; x += searchDistance) {
+            for (int z = minZ; z < maxZ; z += searchDistance) {
+                collector.accept(provider.getBiome(null, x, y, z).key(), new BlockPos(x, y, z));
+            }
         }
     }
 

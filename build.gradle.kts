@@ -29,8 +29,6 @@ dependencies {
         exclude("org.yaml", "snakeyaml")
     }
     implementation("com.github.siroshun09.messages:messages-minimessage:0.7.0")
-    // You can get the jar from https://github.com/Siroshun09/BiomeFinder/releases
-    implementation(files(file("libs").resolve("BiomeFinder-1.9-mc$mcVersion.jar")))
 }
 
 tasks {
