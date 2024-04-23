@@ -7,7 +7,6 @@ group = "net.okocraft.biomelocations"
 version = "1.1"
 
 val apiVersion = "1.20"
-val mcVersion = "$apiVersion.4"
 val javaVersion = JavaVersion.VERSION_17
 
 java {
@@ -24,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:$mcVersion-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation("com.github.siroshun09.configapi:configapi-format-yaml:5.0.0-beta.3") {
         exclude("org.yaml", "snakeyaml")
     }
@@ -57,6 +56,6 @@ tasks {
             include("com.github.siroshun09.biomefinder.util.MapWalker")
             include("com.github.siroshun09.biomefinder.wrapper.**")
         }
-        archiveFileName = "BiomeLocations-$version-mc$mcVersion.jar"
+        archiveFileName = "BiomeLocations-$version.jar"
     }
 }
