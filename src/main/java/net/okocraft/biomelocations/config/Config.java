@@ -16,8 +16,10 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 @SuppressWarnings({"UnstableApiUsage", "unused"})
 public record Config(
@@ -51,6 +53,14 @@ public record Config(
     }
 
     public @NotNull Predicate<Key> createBiomeFilter() {
-        return key -> this.ignoringBiomes.contains(key.asString());
+        var patterns = this.ignoringBiomes.stream().map(Pattern::compile).map(Pattern::asMatchPredicate).toList();
+        return key -> {
+            var strKey = key.asString();
+            return this.ignoringBiomes.contains(strKey) || patterns.stream().anyMatch(pattern -> pattern.test(strKey));
+        };
+    }
+
+    public List<Pattern> ignoringWorldPatterns() {
+        return this.ignoringWorlds.stream().map(Pattern::compile).toList();
     }
 }

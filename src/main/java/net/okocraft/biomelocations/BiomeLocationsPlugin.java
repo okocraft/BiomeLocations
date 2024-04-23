@@ -120,9 +120,11 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
 
     private @NotNull Queue<WorldInfo> collectWorlds() {
         var queue = new ConcurrentLinkedQueue<WorldInfo>();
+        var ignoringWorldPatterns = this.config.ignoringWorldPatterns();
 
         for (var world : this.getServer().getWorlds()) {
-            if (this.config.ignoringWorlds().contains(world.getName())) {
+            var name = world.getName();
+            if (ignoringWorldPatterns.stream().anyMatch(pattern -> pattern.matcher(name).matches())) {
                 continue;
             }
             queue.offer(WorldInfo.create(world));
