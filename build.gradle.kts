@@ -50,6 +50,7 @@ tasks {
     }
 
     jar {
+        archiveFileName = "BiomeLocations-$version-original.jar"
         manifest {
             attributes("paperweight-mappings-namespace" to "mojang")
         }
