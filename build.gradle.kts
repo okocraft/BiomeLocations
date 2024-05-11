@@ -59,6 +59,7 @@ tasks {
     shadowJar {
         minimize()
         relocate("com.github.siroshun09.configapi", "net.okocraft.biomelocations.libs.configapi")
+        relocate("com.github.siroshun09.messages", "net.okocraft.biomelocations.libs.messages")
         archiveFileName = "BiomeLocations-$version.jar"
     }
 }
