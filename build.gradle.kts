@@ -49,6 +49,12 @@ tasks {
         }
     }
 
+    jar {
+        manifest {
+            attributes("paperweight-mappings-namespace" to "mojang")
+        }
+    }
+
     shadowJar {
         minimize()
         relocate("com.github.siroshun09.configapi", "net.okocraft.biomelocations.libs.configapi")
