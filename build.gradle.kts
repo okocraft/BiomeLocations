@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.okocraft.biomelocations"
-version = "1.2"
+version = "1.3"
 
 val apiVersion = "1.20"
 val javaVersion = JavaVersion.VERSION_17
