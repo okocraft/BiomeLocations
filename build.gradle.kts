@@ -27,7 +27,7 @@ dependencies {
     implementation("com.github.siroshun09.configapi:configapi-format-yaml:5.0.0-beta.3") {
         exclude("org.yaml", "snakeyaml")
     }
-    implementation("com.github.siroshun09.messages:messages-minimessage:0.7.0")
+    implementation("com.github.siroshun09.messages:messages-minimessage:0.8.0")
 }
 
 tasks {
