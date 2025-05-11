@@ -8,7 +8,7 @@ A Paper plugin that collect biome locations in the world.
 
 ## Requirements
 
-- Java 17+
+- Java 21+
 - Paper
 
 ## License
