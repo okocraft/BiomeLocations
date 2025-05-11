@@ -22,11 +22,17 @@ repositories {
     }
 }
 
+val configAPIVersion = "5.0.0-rc.1"
+
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
-    implementation("com.github.siroshun09.configapi:configapi-format-yaml:5.0.0-beta.3") {
+    implementation("dev.siroshun.configapi:configapi-core:$configAPIVersion")
+    implementation("dev.siroshun.configapi:configapi-format-binary:$configAPIVersion")
+    implementation("dev.siroshun.configapi:configapi-format-yaml:$configAPIVersion") {
         exclude("org.yaml", "snakeyaml")
     }
+    implementation("dev.siroshun.configapi:configapi-serialization-record:$configAPIVersion")
+
     implementation("com.github.siroshun09.messages:messages-minimessage:0.8.0")
 }
 

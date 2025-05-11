@@ -1,13 +1,13 @@
 package net.okocraft.biomelocations.config;
 
-import com.github.siroshun09.configapi.core.node.MapNode;
-import com.github.siroshun09.configapi.core.serialization.annotation.CollectionType;
-import com.github.siroshun09.configapi.core.serialization.annotation.DefaultBoolean;
-import com.github.siroshun09.configapi.core.serialization.annotation.DefaultInt;
-import com.github.siroshun09.configapi.core.serialization.annotation.DefaultMethod;
-import com.github.siroshun09.configapi.core.serialization.key.KeyGenerator;
-import com.github.siroshun09.configapi.core.serialization.record.RecordSerialization;
-import com.github.siroshun09.configapi.format.yaml.YamlFormat;
+import dev.siroshun.configapi.core.node.MapNode;
+import dev.siroshun.configapi.format.yaml.YamlFormat;
+import dev.siroshun.configapi.serialization.record.RecordSerialization;
+import dev.siroshun.serialization.annotation.CollectionType;
+import dev.siroshun.serialization.annotation.DefaultBoolean;
+import dev.siroshun.serialization.annotation.DefaultInt;
+import dev.siroshun.serialization.annotation.DefaultMethod;
+import dev.siroshun.serialization.core.key.KeyGenerator;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
