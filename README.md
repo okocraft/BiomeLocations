@@ -15,4 +15,4 @@ A Paper plugin that collect biome locations in the world.
 
 This project is licensed under the GPL-3.0 license. Please see [LICENSE](LICENSE) for more info.
 
-Copyright © 2024, OKOCRAFT
+Copyright © 2024-2025, OKOCRAFT
