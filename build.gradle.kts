@@ -25,7 +25,7 @@ repositories {
 val configAPIVersion = "5.0.0-rc.1"
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.5-no-moonrise-SNAPSHOT")
     implementation("dev.siroshun.configapi:configapi-core:$configAPIVersion")
     implementation("dev.siroshun.configapi:configapi-format-binary:$configAPIVersion")
     implementation("dev.siroshun.configapi:configapi-format-yaml:$configAPIVersion") {
