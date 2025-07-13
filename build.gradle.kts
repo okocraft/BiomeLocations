@@ -22,7 +22,7 @@ repositories {
     }
 }
 
-val configAPIVersion = "5.0.0-rc.1"
+val configAPIVersion = "5.0.0-rc.2"
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
