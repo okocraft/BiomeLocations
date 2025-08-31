@@ -1,5 +1,5 @@
 name: BiomeLocations
-api-version: ${apiVersion}
+api-version: ${minecraftVersion}
 main: net.okocraft.biomelocations.BiomeLocationsPlugin
 version: ${projectVersion}
 author: Siroshun09
