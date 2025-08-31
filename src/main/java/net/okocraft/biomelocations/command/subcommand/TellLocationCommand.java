@@ -1,5 +1,7 @@
 package net.okocraft.biomelocations.command.subcommand;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -7,7 +9,6 @@ import net.okocraft.biomelocations.data.BiomeLocationData;
 import net.okocraft.biomelocations.message.Messages;
 import net.okocraft.biomelocations.util.BlockPos;
 import org.bukkit.Bukkit;
-import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -91,7 +92,8 @@ public class TellLocationCommand implements SubCommand {
 
         if (args.length == 3) {
             var filter = args[2].toLowerCase(Locale.ENGLISH);
-            return Registry.BIOME.stream()
+            return RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME)
+                    .stream()
                     .map(Biome::getKey)
                     .filter(key -> key.asString().startsWith(filter) || key.asMinimalString().startsWith(filter))
                     .map(Key::asString)
