@@ -33,7 +33,7 @@ dependencies {
     }
     implementation("dev.siroshun.configapi:configapi-serialization-record:$configAPIVersion")
 
-    implementation("com.github.siroshun09.messages:messages-minimessage:0.8.0")
+    implementation("dev.siroshun.mcmsgdef:mcmsgdef:1.0.0-rc.2")
 }
 
 tasks {
@@ -65,7 +65,7 @@ tasks {
     shadowJar {
         minimize()
         relocate("com.github.siroshun09.configapi", "net.okocraft.biomelocations.libs.configapi")
-        relocate("com.github.siroshun09.messages", "net.okocraft.biomelocations.libs.messages")
+        relocate("dev.siroshun.mcmsgdef", "net.okocraft.biomelocations.libs.mcmsgdef")
         archiveFileName = "BiomeLocations-$version.jar"
     }
 }

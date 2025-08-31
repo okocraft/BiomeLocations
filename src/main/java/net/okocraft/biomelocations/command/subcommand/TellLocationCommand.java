@@ -1,11 +1,11 @@
 package net.okocraft.biomelocations.command.subcommand;
 
-import com.github.siroshun09.messages.minimessage.base.MiniMessageBase;
-import com.github.siroshun09.messages.minimessage.localization.MiniMessageLocalization;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import net.okocraft.biomelocations.data.BiomeLocationData;
 import net.okocraft.biomelocations.message.Messages;
+import net.okocraft.biomelocations.util.BlockPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Registry;
 import org.bukkit.block.Biome;
@@ -21,16 +21,14 @@ import java.util.function.Function;
 
 public class TellLocationCommand implements SubCommand {
 
-    private final MiniMessageLocalization localization;
     private final Function<UUID, BiomeLocationData> biomeLocationDataAccessor;
 
-    public TellLocationCommand(@NotNull MiniMessageLocalization localization, @NotNull Function<UUID, BiomeLocationData> biomeLocationDataAccessor) {
-        this.localization = localization;
+    public TellLocationCommand(@NotNull Function<UUID, BiomeLocationData> biomeLocationDataAccessor) {
         this.biomeLocationDataAccessor = biomeLocationDataAccessor;
     }
 
     @Override
-    public @NotNull MiniMessageBase help() {
+    public @NotNull Component help() {
         return Messages.COMMAND_TELL_LOCATION_HELP;
     }
 
@@ -41,17 +39,16 @@ public class TellLocationCommand implements SubCommand {
 
     @Override
     public void run(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
-        var senderSource = this.localization.findSource(sender);
 
         if (args.length < 3) {
-            this.help().source(senderSource).send(sender);
+            sender.sendMessage(this.help());
             return;
         }
 
         var target = Bukkit.getPlayer(args[1]);
 
         if (target == null) {
-            Messages.COMMAND_GENERAL_PLAYER_NOT_FOUND.apply(args[1]).source(senderSource).send(sender);
+            sender.sendMessage(Messages.COMMAND_GENERAL_PLAYER_NOT_FOUND.apply(args[1]));
             return;
         }
 
@@ -61,25 +58,24 @@ public class TellLocationCommand implements SubCommand {
             //noinspection PatternValidation
             biomeKey = Key.key(args[2]);
         } catch (InvalidKeyException e) {
-            Messages.COMMAND_TELL_LOCATION_INVALID_BIOME_KEY.apply(args[2]).source(senderSource).send(sender);
+            sender.sendMessage(Messages.COMMAND_TELL_LOCATION_INVALID_BIOME_KEY.apply(args[2]));
             return;
         }
 
         var data = this.biomeLocationDataAccessor.apply(target.getWorld().getUID());
 
         if (data == null || data.isUnavailable()) {
-            Messages.COMMAND_TELL_LOCATION_NOT_AVAILABLE.apply(target.getWorld().getName()).source(senderSource).send(sender);
+            sender.sendMessage(Messages.COMMAND_TELL_LOCATION_NOT_AVAILABLE.apply(target.getWorld().getName()));
             return;
         }
 
         var locations = data.getLocations(biomeKey);
-        var targetSource = this.localization.findSource(target);
 
         if (locations.isEmpty()) {
-            Messages.COMMAND_TELL_LOCATION_NOT_FOUND.apply(biomeKey).source(targetSource).send(target);
+            target.sendMessage(Messages.COMMAND_TELL_LOCATION_NOT_FOUND.apply(biomeKey));
         } else {
-            var randomSelectedPos = locations.get(ThreadLocalRandom.current().nextInt(0, locations.size()));
-            Messages.COMMAND_TELL_LOCATION_SUCCESS.apply(biomeKey, randomSelectedPos.x(), randomSelectedPos.z()).source(targetSource).send(target);
+            BlockPos randomSelectedPos = locations.get(ThreadLocalRandom.current().nextInt(0, locations.size()));
+            sender.sendMessage(Messages.COMMAND_TELL_LOCATION_SUCCESS.apply(biomeKey, randomSelectedPos.x(), randomSelectedPos.z()));
         }
     }
 

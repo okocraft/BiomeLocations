@@ -1,12 +1,10 @@
 package net.okocraft.biomelocations;
 
-import com.github.siroshun09.messages.api.directory.DirectorySource;
-import com.github.siroshun09.messages.api.directory.MessageProcessors;
-import com.github.siroshun09.messages.api.source.StringMessageMap;
-import com.github.siroshun09.messages.api.util.PropertiesFile;
-import com.github.siroshun09.messages.minimessage.localization.MiniMessageLocalization;
-import com.github.siroshun09.messages.minimessage.source.MiniMessageSource;
+import dev.siroshun.mcmsgdef.directory.DirectorySource;
+import dev.siroshun.mcmsgdef.directory.MessageProcessors;
+import dev.siroshun.mcmsgdef.file.PropertiesFile;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
+import net.kyori.adventure.key.Key;
 import net.okocraft.biomelocations.command.BiomeLocationsCommand;
 import net.okocraft.biomelocations.command.subcommand.TellLocationCommand;
 import net.okocraft.biomelocations.config.Config;
@@ -44,7 +42,6 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
 
     private final Map<UUID, BiomeLocationData> worldDataMap = new ConcurrentHashMap<>();
     private Config config;
-    private MiniMessageLocalization localization;
     private BiomeLocationsCommand command;
 
     public BiomeLocationsPlugin() {
@@ -73,14 +70,14 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (this.config == null || this.localization == null) { // the config is failed to load
+        if (this.config == null) { // the config is failed to load
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         this.command =
-                new BiomeLocationsCommand(this.localization)
-                        .addSubCommand("telllocation", new TellLocationCommand(this.localization, this.worldDataMap::get))
+                new BiomeLocationsCommand()
+                        .addSubCommand("telllocation", new TellLocationCommand(this.worldDataMap::get))
                         .register(this.getName().toLowerCase(Locale.ENGLISH));
 
         this.getServer().getGlobalRegionScheduler().runDelayed(this, this::runCollectWorldsTask, 1L);
@@ -134,16 +131,10 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
     }
 
     private void loadMessages() throws IOException {
-        if (this.localization == null) { // on startup
-            this.localization = new MiniMessageLocalization(MiniMessageSource.create(StringMessageMap.create(Messages.defaultMessages())), BiomeLocationsPlugin::getLocaleFrom);
-        } else { // on reload
-            this.localization.clearSources();
-        }
-
-        DirectorySource.propertiesFiles(this.getDataFolder().toPath().resolve("languages"))
+        DirectorySource.propertiesFiles(this.getDataPath().resolve("languages"))
                 .defaultLocale(Locale.ENGLISH, Locale.JAPANESE)
                 .messageProcessor(MessageProcessors.appendMissingMessagesToPropertiesFile(this::loadDefaultMessageMap))
-                .load(loaded -> this.localization.addSource(loaded.locale(), MiniMessageSource.create(loaded.messageSource())));
+                .loadAndRegister(Key.key("biomelocations", "languages"));
     }
 
     private @Nullable Map<String, String> loadDefaultMessageMap(@NotNull Locale locale) throws IOException {

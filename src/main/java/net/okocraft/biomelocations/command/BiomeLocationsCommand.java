@@ -1,6 +1,5 @@
 package net.okocraft.biomelocations.command;
 
-import com.github.siroshun09.messages.minimessage.localization.MiniMessageLocalization;
 import net.okocraft.biomelocations.command.subcommand.HelpCommand;
 import net.okocraft.biomelocations.command.subcommand.SubCommand;
 import net.okocraft.biomelocations.message.Messages;
@@ -19,15 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class BiomeLocationsCommand extends Command implements TabCompleter {
 
-    private final Map<String, SubCommand> subCommandMap = new ConcurrentHashMap<>();
-
-    private final MiniMessageLocalization localization;
     private final HelpCommand helpCommand;
 
-    public BiomeLocationsCommand(@NotNull MiniMessageLocalization localization) {
+    private final Map<String, SubCommand> subCommandMap = new ConcurrentHashMap<>();
+
+    public BiomeLocationsCommand() {
         super("biomelocations");
-        this.localization = localization;
-        this.helpCommand = new HelpCommand(localization, () -> this.subCommandMap.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue));
+        this.helpCommand = new HelpCommand(() -> this.subCommandMap.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue));
 
         this.subCommandMap.put("help", this.helpCommand);
     }
@@ -48,7 +45,7 @@ public final class BiomeLocationsCommand extends Command implements TabCompleter
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("biomelocations.command")) {
-            this.sendNoPermission(sender, "biomelocations.command");
+            sender.sendMessage(Messages.NO_PERMISSION.apply("biomelocations.command"));
             return true;
         }
 
@@ -63,7 +60,7 @@ public final class BiomeLocationsCommand extends Command implements TabCompleter
         if (sender.hasPermission(subCommand.permissionNode())) {
             subCommand.run(sender, args);
         } else {
-            this.sendNoPermission(sender, subCommand.permissionNode());
+            sender.sendMessage(Messages.NO_PERMISSION.apply(subCommand.permissionNode()));
         }
 
         return true;
@@ -90,10 +87,6 @@ public final class BiomeLocationsCommand extends Command implements TabCompleter
         } else {
             return Collections.emptyList();
         }
-    }
-
-    private void sendNoPermission(@NotNull CommandSender target, @NotNull String permissionNode) {
-        Messages.NO_PERMISSION.apply(permissionNode).source(this.localization.findSource(target)).send(target);
     }
 
     public @NotNull BiomeLocationsCommand addSubCommand(@NotNull String name, @NotNull SubCommand subCommand) {
