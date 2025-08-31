@@ -34,11 +34,9 @@ jcommon {
 
 bundler {
     copyToRootBuildDirectory("BiomeLocations-${project.version}")
-    replacePluginVersionForBukkit(project.version, apiVersion)
+    replacePluginVersionForPaper(project.version, apiVersion)
 }
 
 tasks.shadowJar {
     minimize()
-    relocate("com.github.siroshun09.configapi", "net.okocraft.biomelocations.libs.configapi")
-    relocate("dev.siroshun.mcmsgdef", "net.okocraft.biomelocations.libs.mcmsgdef")
 }

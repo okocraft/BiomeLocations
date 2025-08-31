@@ -1,6 +1,6 @@
 name: BiomeLocations
-api-version: ${minecraftVersion}
+api-version: '${minecraftVersion}'
+version: '${projectVersion}'
 main: net.okocraft.biomelocations.BiomeLocationsPlugin
-version: ${projectVersion}
 author: Siroshun09
 folia-supported: true
