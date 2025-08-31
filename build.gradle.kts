@@ -24,7 +24,11 @@ jcommon {
         }
         implementation(libs.configapi.serialization.record)
 
-        implementation(libs.mcmsgdef)
+        implementation(libs.mcmsgdef) {
+            exclude("net.kyori", "adventure-api")
+            exclude("net.kyori", "adventure-text-serializer-minimessage")
+            exclude("org.jetbrains", "annotations")
+        }
     }
 }
 
