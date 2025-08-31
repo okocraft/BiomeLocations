@@ -1,7 +1,7 @@
 plugins {
     `java-library`
-    id("dev.siroshun.gradle.plugins.jcommon") version "1.5.1"
-    id("dev.siroshun.gradle.plugins.bundler") version "1.5.1"
+    alias(libs.plugins.jcommon)
+    alias(libs.plugins.bundler)
 }
 
 group = "net.okocraft.biomelocations"
@@ -15,17 +15,16 @@ jcommon {
     setupPaperRepository()
 
     commonDependencies {
-        compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+        compileOnly(libs.paper.api)
 
-        val configAPIVersion = "5.0.0-rc.2"
-        implementation("dev.siroshun.configapi:configapi-core:$configAPIVersion")
-        implementation("dev.siroshun.configapi:configapi-format-binary:$configAPIVersion")
-        implementation("dev.siroshun.configapi:configapi-format-yaml:$configAPIVersion") {
+        implementation(libs.configapi.core)
+        implementation(libs.configapi.format.binary)
+        implementation(libs.configapi.format.yaml) {
             exclude("org.yaml", "snakeyaml")
         }
-        implementation("dev.siroshun.configapi:configapi-serialization-record:$configAPIVersion")
+        implementation(libs.configapi.serialization.record)
 
-        implementation("dev.siroshun.mcmsgdef:mcmsgdef:1.0.0-rc.2")
+        implementation(libs.mcmsgdef)
     }
 }
 

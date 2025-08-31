@@ -1,0 +1,21 @@
+[versions]
+
+paper = "1.21.8-R0.1-SNAPSHOT"
+configapi = "5.0.0-rc.2"
+mcmsgdef = "1.0.0-rc.2"
+
+gradle-plugins = "1.5.1"
+
+[libraries]
+
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
+configapi-core = { module = "dev.siroshun.configapi:configapi-core", version.ref = "configapi" }
+configapi-format-binary = { module = "dev.siroshun.configapi:configapi-format-binary", version.ref = "configapi" }
+configapi-format-yaml = { module = "dev.siroshun.configapi:configapi-format-yaml", version.ref = "configapi" }
+configapi-serialization-record = { module = "dev.siroshun.configapi:configapi-serialization-record", version.ref = "configapi" }
+mcmsgdef = { module = "dev.siroshun.mcmsgdef:mcmsgdef", version.ref = "mcmsgdef" }
+
+[plugins]
+
+jcommon = { id = "dev.siroshun.gradle.plugins.jcommon", version.ref = "gradle-plugins" }
+bundler = { id = "dev.siroshun.gradle.plugins.bundler", version.ref = "gradle-plugins" }
