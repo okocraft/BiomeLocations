@@ -4,7 +4,7 @@ paper = "1.21.8-R0.1-SNAPSHOT"
 configapi = "5.0.0-rc.2"
 mcmsgdef = "1.0.0-rc.2"
 
-gradle-plugins = "1.5.1"
+gradle-plugins = "1.6.0"
 
 [libraries]
 
