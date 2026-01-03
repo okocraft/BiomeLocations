@@ -76,7 +76,7 @@ public class TellLocationCommand implements SubCommand {
             target.sendMessage(Messages.COMMAND_TELL_LOCATION_NOT_FOUND.apply(biomeKey));
         } else {
             BlockPos randomSelectedPos = locations.get(ThreadLocalRandom.current().nextInt(0, locations.size()));
-            sender.sendMessage(Messages.COMMAND_TELL_LOCATION_SUCCESS.apply(biomeKey, randomSelectedPos.x(), randomSelectedPos.z()));
+            target.sendMessage(Messages.COMMAND_TELL_LOCATION_SUCCESS.apply(biomeKey, randomSelectedPos.x(), randomSelectedPos.z()));
         }
     }
 
