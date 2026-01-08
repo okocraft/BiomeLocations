@@ -76,9 +76,9 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
         }
 
         this.command =
-                new BiomeLocationsCommand()
-                        .addSubCommand("telllocation", new TellLocationCommand(this.worldDataMap::get))
-                        .register(this.getName().toLowerCase(Locale.ENGLISH));
+            new BiomeLocationsCommand()
+                .addSubCommand("telllocation", new TellLocationCommand(this.worldDataMap::get))
+                .register(this.getName().toLowerCase(Locale.ENGLISH));
 
         this.getServer().getGlobalRegionScheduler().runDelayed(this, this::runCollectWorldsTask, 1L);
     }
@@ -132,9 +132,9 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
 
     private void loadMessages() throws IOException {
         DirectorySource.propertiesFiles(this.getDataPath().resolve("languages"))
-                .defaultLocale(Locale.ENGLISH, Locale.JAPANESE)
-                .messageProcessor(MessageProcessors.appendMissingMessagesToPropertiesFile(this::loadDefaultMessageMap))
-                .loadAndRegister(Key.key("biomelocations", "languages"));
+            .defaultLocale(Locale.ENGLISH, Locale.JAPANESE)
+            .messageProcessor(MessageProcessors.appendMissingMessagesToPropertiesFile(this::loadDefaultMessageMap))
+            .loadAndRegister(Key.key("biomelocations", "languages"));
     }
 
     private @Nullable Map<String, String> loadDefaultMessageMap(@NotNull Locale locale) throws IOException {

@@ -38,8 +38,8 @@ public final class BiomeLocationsCommand extends Command implements TabCompleter
         var knownCommands = Bukkit.getCommandMap().getKnownCommands();
 
         Set.copyOf(knownCommands.entrySet()).stream()
-                .filter(entry -> this.equals(entry.getValue()))
-                .forEach(entry -> knownCommands.remove(entry.getKey()));
+            .filter(entry -> this.equals(entry.getValue()))
+            .forEach(entry -> knownCommands.remove(entry.getKey()));
     }
 
     @Override
@@ -74,10 +74,10 @@ public final class BiomeLocationsCommand extends Command implements TabCompleter
 
         if (args.length == 1) {
             return this.subCommandMap.keySet()
-                    .stream()
-                    .filter(cmd -> cmd.startsWith(args[0].toLowerCase(Locale.ENGLISH)))
-                    .filter(cmd -> sender.hasPermission(this.subCommandMap.get(cmd).permissionNode()))
-                    .toList();
+                .stream()
+                .filter(cmd -> cmd.startsWith(args[0].toLowerCase(Locale.ENGLISH)))
+                .filter(cmd -> sender.hasPermission(this.subCommandMap.get(cmd).permissionNode()))
+                .toList();
         }
 
         var subCommand = this.subCommandMap.get(args[0].toLowerCase(Locale.ENGLISH));

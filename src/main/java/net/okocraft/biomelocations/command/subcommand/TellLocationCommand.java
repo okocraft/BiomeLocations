@@ -85,19 +85,19 @@ public class TellLocationCommand implements SubCommand {
         if (args.length == 2) {
             var filter = args[1].toLowerCase(Locale.ENGLISH);
             return Bukkit.getOnlinePlayers().stream()
-                    .map(CommandSender::getName)
-                    .filter(name -> name.toLowerCase(Locale.ENGLISH).startsWith(filter))
-                    .toList();
+                .map(CommandSender::getName)
+                .filter(name -> name.toLowerCase(Locale.ENGLISH).startsWith(filter))
+                .toList();
         }
 
         if (args.length == 3) {
             var filter = args[2].toLowerCase(Locale.ENGLISH);
             return RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME)
-                    .stream()
-                    .map(Biome::getKey)
-                    .filter(key -> key.asString().startsWith(filter) || key.asMinimalString().startsWith(filter))
-                    .map(Key::asString)
-                    .toList();
+                .stream()
+                .map(Biome::getKey)
+                .filter(key -> key.asString().startsWith(filter) || key.asMinimalString().startsWith(filter))
+                .map(Key::asString)
+                .toList();
         }
 
         return Collections.emptyList();

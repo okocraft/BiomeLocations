@@ -32,9 +32,9 @@ public class HelpCommand implements SubCommand {
         TextComponent.Builder result = Component.text().append(Messages.COMMAND_HELP_HEADER);
 
         this.subCommandStreamSupplier.get()
-                .filter(cmd -> sender.hasPermission(cmd.permissionNode()))
-                .map(SubCommand::help)
-                .forEach(help -> result.append(Component.newline()).append(help));
+            .filter(cmd -> sender.hasPermission(cmd.permissionNode()))
+            .map(SubCommand::help)
+            .forEach(help -> result.append(Component.newline()).append(help));
 
         sender.sendMessage(result);
     }
