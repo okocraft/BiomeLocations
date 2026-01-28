@@ -2,7 +2,7 @@
 
 paper = "1.21.11-R0.1-SNAPSHOT"
 configapi = "5.0.0-rc.2"
-mcmsgdef = "1.0.0"
+mcmsgdef = "1.0.2"
 
 gradle-plugins = "1.6.1"
 
