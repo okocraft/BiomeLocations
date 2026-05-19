@@ -8,11 +8,11 @@ A Paper plugin that collect biome locations in the world.
 
 ## Requirements
 
-- Java 21+
+- Java 25+
 - Paper
 
 ## License
 
 This project is licensed under the GPL-3.0 license. Please see [LICENSE](LICENSE) for more info.
 
-Copyright © 2024-2025, OKOCRAFT
+Copyright © 2024-2026, OKOCRAFT
