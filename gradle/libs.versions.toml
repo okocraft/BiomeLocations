@@ -1,6 +1,6 @@
 [versions]
 
-paper = "26.1.2.build.63-stable"
+paper = "26.1.2.build.64-stable"
 configapi = "5.0.0-rc.2"
 mcmsgdef = "1.2.0"
 
