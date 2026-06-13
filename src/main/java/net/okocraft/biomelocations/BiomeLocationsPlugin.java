@@ -117,8 +117,7 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
         List<Pattern> ignoringWorldPatterns = this.config.ignoringWorldPatterns();
 
         for (World world : this.getServer().getWorlds()) {
-            String name = world.getName();
-            if (ignoringWorldPatterns.stream().anyMatch(pattern -> pattern.matcher(name).matches())) {
+            if (ignoringWorldPatterns.stream().anyMatch(pattern -> pattern.matcher(world.getKey().asString()).matches())) {
                 continue;
             }
             list.add(WorldInfo.create(world));

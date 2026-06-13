@@ -21,7 +21,7 @@ public class Config {
         return YamlConfigurationLoader.builder().path(filepath).build().load().get(Config.class, new Config());
     }
 
-    public Set<String> ignoringWorlds = Set.of("ignoring_world_name");
+    public Set<String> ignoringWorlds = Set.of("minecraft:ignored_world");
     public Set<String> ignoringBiomes = Set.of("minecraft:ocean");
     public int searchDistance = 64;
     public int maximumRadius = 5000;
