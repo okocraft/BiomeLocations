@@ -146,14 +146,4 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
             }
         }
     }
-
-    private static @NotNull Locale getLocaleFrom(@Nullable Object object) {
-        if (object instanceof Locale locale) {
-            return locale;
-        } else if (object instanceof Player player) {
-            return player.locale();
-        } else {
-            return Locale.getDefault();
-        }
-    }
 }
