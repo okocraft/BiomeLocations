@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.okocraft.biomelocations"
-version = "1.3"
+version = "1.4"
 
 val apiVersion = "1.21"
 
@@ -17,6 +17,10 @@ jcommon {
     commonDependencies {
         compileOnly(libs.paper.api)
 
+        implementation(libs.codec4j.io.gson) {
+            exclude("com.google.code.gson", "gson")
+        }
+        implementation(libs.codec4j.io.gzip)
         implementation(libs.configapi.core)
         implementation(libs.configapi.format.binary)
         implementation(libs.configapi.format.yaml) {

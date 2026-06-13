@@ -6,8 +6,8 @@ import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.okocraft.biomelocations.data.BiomeLocationData;
+import net.okocraft.biomelocations.data.BiomePos;
 import net.okocraft.biomelocations.message.Messages;
-import net.okocraft.biomelocations.util.BlockPos;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
@@ -40,7 +40,6 @@ public class TellLocationCommand implements SubCommand {
 
     @Override
     public void run(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
-
         if (args.length < 3) {
             sender.sendMessage(this.help());
             return;
@@ -65,7 +64,7 @@ public class TellLocationCommand implements SubCommand {
 
         var data = this.biomeLocationDataAccessor.apply(target.getWorld().getUID());
 
-        if (data == null || data.isUnavailable()) {
+        if (data == null) {
             sender.sendMessage(Messages.COMMAND_TELL_LOCATION_NOT_AVAILABLE.apply(target.getWorld().getName()));
             return;
         }
@@ -75,7 +74,7 @@ public class TellLocationCommand implements SubCommand {
         if (locations.isEmpty()) {
             target.sendMessage(Messages.COMMAND_TELL_LOCATION_NOT_FOUND.apply(biomeKey));
         } else {
-            BlockPos randomSelectedPos = locations.get(ThreadLocalRandom.current().nextInt(0, locations.size()));
+            BiomePos randomSelectedPos = locations.get(ThreadLocalRandom.current().nextInt(0, locations.size()));
             target.sendMessage(Messages.COMMAND_TELL_LOCATION_SUCCESS.apply(biomeKey, randomSelectedPos.x(), randomSelectedPos.z()));
         }
     }

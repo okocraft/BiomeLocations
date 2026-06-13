@@ -1,8 +1,6 @@
 package net.okocraft.biomelocations.data;
 
 import net.kyori.adventure.key.Key;
-import net.okocraft.biomelocations.BiomeLocationsPlugin;
-import net.okocraft.biomelocations.util.BlockPos;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -12,9 +10,9 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-class BiomeLocationCollector implements BiConsumer<Key, BlockPos> {
+class BiomeLocationCollector implements BiConsumer<Key, BiomePos> {
 
-    private final Map<Key, List<BlockPos>> result = new HashMap<>();
+    private final Map<Key, List<BiomePos>> result = new HashMap<>();
 
     private final Predicate<Key> biomeFilter;
     private final long minimumBiomeDistanceSquared;
@@ -25,28 +23,27 @@ class BiomeLocationCollector implements BiConsumer<Key, BlockPos> {
     }
 
     @Override
-    public void accept(@NotNull Key biome, @NotNull BlockPos pos) {
+    public void accept(@NotNull Key biome, @NotNull BiomePos pos) {
         if (this.biomeFilter.test(biome)) {
             return;
         }
 
-        var posList = this.result.computeIfAbsent(biome, ignored -> new ArrayList<>());
+        List<BiomePos> posList = this.result.computeIfAbsent(biome, _ -> new ArrayList<>());
 
-        for (var otherPos : posList) {
+        for (BiomePos otherPos : posList) {
             if (distanceSquared2d(pos, otherPos) < this.minimumBiomeDistanceSquared) {
                 return;
             }
         }
 
-        BiomeLocationsPlugin.debug().info("The biome '{}' was found at {}, {}", biome.asString(), pos.x(), pos.z());
         posList.add(pos);
     }
 
-    @NotNull Map<Key, List<BlockPos>> getResult() {
+    @NotNull Map<Key, List<BiomePos>> getResult() {
         return this.result;
     }
 
-    private static long distanceSquared2d(@NotNull BlockPos pos1, @NotNull BlockPos pos2) {
+    private static long distanceSquared2d(@NotNull BiomePos pos1, @NotNull BiomePos pos2) {
         return square(pos1.x() - pos2.x()) + square(pos1.z() - pos2.z());
     }
 

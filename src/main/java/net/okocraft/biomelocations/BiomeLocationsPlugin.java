@@ -1,5 +1,7 @@
 package net.okocraft.biomelocations;
 
+import dev.siroshun.codec4j.api.error.DecodeError;
+import dev.siroshun.jfun.result.Result;
 import dev.siroshun.mcmsgdef.directory.DirectorySource;
 import dev.siroshun.mcmsgdef.directory.MessageProcessors;
 import dev.siroshun.mcmsgdef.file.PropertiesFile;
@@ -11,60 +13,40 @@ import net.okocraft.biomelocations.config.Config;
 import net.okocraft.biomelocations.data.BiomeLocationData;
 import net.okocraft.biomelocations.data.WorldInfo;
 import net.okocraft.biomelocations.message.Messages;
-import org.bukkit.entity.Player;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.helpers.NOPLogger;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.regex.Pattern;
 
-@SuppressWarnings("unused")
 public final class BiomeLocationsPlugin extends JavaPlugin {
-
-    private static Logger logger = NOPLogger.NOP_LOGGER;
-    private static Logger debug = NOPLogger.NOP_LOGGER;
-
-    public static @NotNull Logger logger() {
-        return logger;
-    }
-
-    public static @NotNull Logger debug() {
-        return debug;
-    }
 
     private final Map<UUID, BiomeLocationData> worldDataMap = new ConcurrentHashMap<>();
     private Config config;
     private BiomeLocationsCommand command;
-
-    public BiomeLocationsPlugin() {
-        logger = this.getSLF4JLogger();
-    }
 
     @Override
     public void onLoad() {
         try {
             this.config = Config.loadFromYamlFile(this.getDataFolder().toPath().resolve("config.yml"));
         } catch (IOException e) {
-            logger().error("Failed to load config.yml", e);
+            this.getSLF4JLogger().error("Failed to load config.yml", e);
             return;
         }
-
-        if (this.config.debug()) {
-            debug = this.getSLF4JLogger();
-        }
-
         try {
             this.loadMessages();
         } catch (IOException e) {
-            logger().error("Failed to load messages.", e);
+            this.getSLF4JLogger().error("Failed to load messages.", e);
         }
     }
 
@@ -91,43 +73,56 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
     }
 
     private void runCollectWorldsTask(@NotNull ScheduledTask ignored) {
-        debug().info("Collecting worlds...");
-        var queue = this.collectWorlds();
-        this.getServer().getAsyncScheduler().runNow(this, ignoredTask -> this.runInitializeWorldDataTask(queue));
+        this.getServer().getAsyncScheduler().runNow(this, ignoredTask -> this.runInitializeWorldDataTask(this.collectWorlds()));
     }
 
-    private void runInitializeWorldDataTask(@NotNull Queue<WorldInfo> queue) {
-        WorldInfo info;
-
-        var cacheDirectory = this.getDataFolder().toPath().resolve("cache");
-
-        while ((info = queue.poll()) != null) {
-            var data = new BiomeLocationData(info);
-            this.worldDataMap.put(info.uid(), data);
-
+    private void runInitializeWorldDataTask(@NotNull List<WorldInfo> queue) {
+        Path cacheDirectory = this.getDataFolder().toPath().resolve("cache");
+        if (!Files.isDirectory(cacheDirectory)) {
             try {
-                data.loadCacheOrCollectBiomes(cacheDirectory, this.config.searchDistance(), this.config.createBiomeFilter(), this.config.minimumBiomeDistance(), this.config.debug());
+                Files.createDirectories(cacheDirectory);
             } catch (IOException e) {
-                this.getSLF4JLogger().error("Failed to load/save the cache file (world: {})", info.name(), e);
-            } catch (RuntimeException e) {
-                this.getSLF4JLogger().error("Unexpected exception occurred while initializing the biome location data for world {}", info.name(), e);
+                this.getSLF4JLogger().error("Failed to create cache directory", e);
+                return;
             }
+        }
+
+        for (WorldInfo info : queue) {
+            Path cacheFilepath = BiomeLocationData.createCacheFilepath(cacheDirectory, info);
+            if (Files.isRegularFile(cacheFilepath)) {
+                Result<BiomeLocationData, DecodeError> result = BiomeLocationData.loadCache(cacheFilepath);
+                if (result.isSuccess()) {
+                    this.worldDataMap.put(info.uid(), result.unwrap());
+                    continue;
+                }
+
+                this.getSLF4JLogger().warn("Failed to load biome data from cache (world: {}): {}", info.name(), result.unwrapError());
+            }
+
+            BiomeLocationData.generate(info, this.config.searchDistance(), 5000, this.config.createBiomeFilter(), this.config.minimumBiomeDistance())
+                .inspect(result -> {
+                    this.worldDataMap.put(info.uid(), result);
+                    BiomeLocationData.saveCache(cacheFilepath, result)
+                        .inspect(_ -> this.getSLF4JLogger().info("Biome data is generated (world: {})", info.name()))
+                        .inspectError(error -> this.getSLF4JLogger().warn("Failed to save biome data to cache (world: {}): {}", info.name(), error));
+                })
+                .inspectError(error -> this.getSLF4JLogger().error("Failed to generate the biome data (world: {}): {}", info.name(), error));
         }
     }
 
-    private @NotNull Queue<WorldInfo> collectWorlds() {
-        var queue = new ConcurrentLinkedQueue<WorldInfo>();
-        var ignoringWorldPatterns = this.config.ignoringWorldPatterns();
+    private @NotNull List<WorldInfo> collectWorlds() {
+        List<WorldInfo> list = new ArrayList<>();
+        List<Pattern> ignoringWorldPatterns = this.config.ignoringWorldPatterns();
 
-        for (var world : this.getServer().getWorlds()) {
-            var name = world.getName();
+        for (World world : this.getServer().getWorlds()) {
+            String name = world.getName();
             if (ignoringWorldPatterns.stream().anyMatch(pattern -> pattern.matcher(name).matches())) {
                 continue;
             }
-            queue.offer(WorldInfo.create(world));
+            list.add(WorldInfo.create(world));
         }
 
-        return queue;
+        return list;
     }
 
     private void loadMessages() throws IOException {
