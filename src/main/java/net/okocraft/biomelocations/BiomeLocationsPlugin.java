@@ -37,12 +37,14 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        this.saveDefaultConfig();
         try {
-            this.config = Config.loadFromYamlFile(this.getDataFolder().toPath().resolve("config.yml"));
+            this.config = Config.loadFrom(this.getDataFolder().toPath().resolve("config.yml"));
         } catch (IOException e) {
             this.getSLF4JLogger().error("Failed to load config.yml", e);
             return;
         }
+
         try {
             this.loadMessages();
         } catch (IOException e) {
@@ -99,7 +101,7 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
                 this.getSLF4JLogger().warn("Failed to load biome data from cache (world: {}): {}", info.name(), result.unwrapError());
             }
 
-            BiomeLocationData.generate(info, this.config.searchDistance(), 5000, this.config.createBiomeFilter(), this.config.minimumBiomeDistance())
+            BiomeLocationData.generate(info, this.config.searchDistance, this.config.maximumRadius, this.config.createBiomeFilter(), this.config.minimumBiomeDistance)
                 .inspect(result -> {
                     this.worldDataMap.put(info.uid(), result);
                     BiomeLocationData.saveCache(cacheFilepath, result)

@@ -1,0 +1,9 @@
+ignoring-worlds:
+  - ignoring_world_name
+
+ignoring-biomes:
+  - minecraft:ocean
+
+search-distance: 64
+maximum-radius: 5000
+minimum-biome-distance: 500

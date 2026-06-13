@@ -15,19 +15,13 @@ jcommon {
     setupPaperRepository()
 
     commonDependencies {
+        compileOnly(libs.configurate.yaml)
         compileOnly(libs.paper.api)
 
         implementation(libs.codec4j.io.gson) {
             exclude("com.google.code.gson", "gson")
         }
         implementation(libs.codec4j.io.gzip)
-        implementation(libs.configapi.core)
-        implementation(libs.configapi.format.binary)
-        implementation(libs.configapi.format.yaml) {
-            exclude("org.yaml", "snakeyaml")
-        }
-        implementation(libs.configapi.serialization.record)
-
         implementation(libs.mcmsgdef)
     }
 }
