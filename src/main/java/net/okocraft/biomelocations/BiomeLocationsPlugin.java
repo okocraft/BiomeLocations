@@ -129,6 +129,7 @@ public final class BiomeLocationsPlugin extends JavaPlugin {
     private void loadMessages() throws IOException {
         DirectorySource.propertiesFiles(this.getDataPath().resolve("languages"))
             .defaultLocale(Locale.ENGLISH, Locale.JAPANESE)
+            .primaryLocale(Locale.ENGLISH)
             .messageProcessor(MessageProcessors.appendMissingMessagesToPropertiesFile(this::loadDefaultMessageMap))
             .loadAndRegister(Key.key("biomelocations", "languages"));
     }
